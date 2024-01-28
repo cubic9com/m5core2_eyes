@@ -17,10 +17,18 @@ m5core2_eyesは、M5Stack Core2の画面上のタッチを見つめる目を表�
 
 # Installing
 
-1. Download this sketch from [GitHub](https://github.com/cubic9com/m5core2_eyes/).
-1. Launch [Arduino IDE](https://www.arduino.cc/).
-1. Open this sketch.
-1. Compile and upload this sketch to M5Stack Core2.
+1. Download this project from [GitHub](https://github.com/cubic9com/m5core2_eyes/) .
+1. Download and install [Visual Studio Code ](https://code.visualstudio.com/) .
+1. Launch VSCode.
+1. Click the Extensions manager icon in the left Activity Bar.
+1. Search for `platformio ide` and install the `PlatformIO IDE` extension.
+1. Launch VSCode.
+1. Click the PlatformIO icon in the left Activity Bar.
+1. Click `QUICK ACCESS/PIO Home/Open` in the left Primary Sidebar.
+1. Click `Open Project` in the `PIO HOME` tab in the right Editor Groups.
+1. Open this project which you downloaded above.
+1. Click the PlatformIO icon in the left Activity Bar.
+1. Click `PROJECT TASKS/m5stack-core2/General/Upload` in the left Primary Sidebar.
 
 \[日本語\]
 
