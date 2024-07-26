@@ -11,20 +11,29 @@ struct point_t {
   int16_t y;
 };
 
+const point_t disp_rect_base[2] = {
+  {0, 55},
+  {160, 55}
+};
+
 const point_t eye_base[2] = {
   {80, 120},
   {240, 120}
 };
 
-M5Canvas disp;
+M5Canvas disp_l;
+M5Canvas disp_r;
 point_t old_pupil[2];
 
 float degree = 0.0F; 
 bool is_dizzy = false;
 
+u_int8_t eyelids_counter = 0; 
+u_int8_t eyelids_max = 20; 
+
 void init_eyes() {
-  disp.fillCircle(old_pupil[0].x, old_pupil[0].y, pupil_radius, TFT_WHITE);
-  disp.fillCircle(old_pupil[1].x, old_pupil[1].y, pupil_radius, TFT_WHITE);
+  disp_l.fillCircle(old_pupil[0].x - disp_rect_base[0].x, old_pupil[0].y - disp_rect_base[0].y, pupil_radius, TFT_WHITE);
+  disp_r.fillCircle(old_pupil[1].x - disp_rect_base[1].x, old_pupil[1].y - disp_rect_base[1].y, pupil_radius, TFT_WHITE);
 
   old_pupil[0].x = eye_base[0].x;
   old_pupil[0].y = eye_base[0].y;
@@ -34,20 +43,20 @@ void init_eyes() {
 
 void draw_center_pupils() {
   point_t new_pupil[2];
-  point_t delta;
+  point_t saccades_delta;
 
-  delta.x = random(2);
-  delta.y = random(2);
+  saccades_delta.x = random(11) / 10;
+  saccades_delta.y = random(11) / 10;
 
-  new_pupil[0].x = eye_base[0].x + delta.x;
-  new_pupil[0].y = eye_base[0].y + delta.y;
-  new_pupil[1].x = eye_base[1].x + delta.x;
-  new_pupil[1].y = eye_base[1].y + delta.y;
+  new_pupil[0].x = eye_base[0].x + saccades_delta.x;
+  new_pupil[0].y = eye_base[0].y + saccades_delta.y;
+  new_pupil[1].x = eye_base[1].x + saccades_delta.x;
+  new_pupil[1].y = eye_base[1].y + saccades_delta.y;
 
-  disp.fillCircle(old_pupil[0].x, old_pupil[0].y, pupil_radius, TFT_WHITE);
-  disp.fillCircle(new_pupil[0].x, new_pupil[0].y, pupil_radius, TFT_BLACK);
-  disp.fillCircle(old_pupil[1].x, old_pupil[1].y, pupil_radius, TFT_WHITE);
-  disp.fillCircle(new_pupil[1].x, new_pupil[1].y, pupil_radius, TFT_BLACK);
+  disp_l.fillCircle(old_pupil[0].x - disp_rect_base[0].x, old_pupil[0].y - disp_rect_base[0].y, pupil_radius, TFT_WHITE);
+  disp_l.fillCircle(new_pupil[0].x - disp_rect_base[0].x, new_pupil[0].y - disp_rect_base[0].y, pupil_radius, TFT_BLACK);
+  disp_r.fillCircle(old_pupil[1].x - disp_rect_base[1].x, old_pupil[1].y - disp_rect_base[1].y, pupil_radius, TFT_WHITE);
+  disp_r.fillCircle(new_pupil[1].x - disp_rect_base[1].x, new_pupil[1].y - disp_rect_base[1].y, pupil_radius, TFT_BLACK);
 
   old_pupil[0].x = new_pupil[0].x;
   old_pupil[0].y = new_pupil[0].y;
@@ -80,24 +89,23 @@ point_t compute_gazing_pupil(point_t touch_point, point_t base, point_t delta) {
 
 void draw_gazing_pupils(point_t touch_point) {
   point_t new_pupil[2];
-  point_t delta;
+  point_t saccades_delta;
 
-  // for saccades
-  delta.x = random(2);
-  delta.y = random(2);
+  saccades_delta.x = random(11) / 10;
+  saccades_delta.y = random(11) / 10;
 
-  new_pupil[0] = compute_gazing_pupil(touch_point, eye_base[0], delta);
+  new_pupil[0] = compute_gazing_pupil(touch_point, eye_base[0], saccades_delta);
 
-  disp.fillCircle(old_pupil[0].x, old_pupil[0].y, pupil_radius, TFT_WHITE);
-  disp.fillCircle(new_pupil[0].x, new_pupil[0].y, pupil_radius, TFT_BLACK);
+  disp_l.fillCircle(old_pupil[0].x - disp_rect_base[0].x, old_pupil[0].y - disp_rect_base[0].y, pupil_radius, TFT_WHITE);
+  disp_l.fillCircle(new_pupil[0].x - disp_rect_base[0].x, new_pupil[0].y - disp_rect_base[0].y, pupil_radius, TFT_BLACK);
 
   old_pupil[0].x = new_pupil[0].x;
   old_pupil[0].y = new_pupil[0].y;
 
-  new_pupil[1] = compute_gazing_pupil(touch_point, eye_base[1], delta);
+  new_pupil[1] = compute_gazing_pupil(touch_point, eye_base[1], saccades_delta);
 
-  disp.fillCircle(old_pupil[1].x, old_pupil[1].y, pupil_radius, TFT_WHITE);
-  disp.fillCircle(new_pupil[1].x, new_pupil[1].y, pupil_radius, TFT_BLACK);
+  disp_r.fillCircle(old_pupil[1].x - disp_rect_base[1].x, old_pupil[1].y - disp_rect_base[1].y, pupil_radius, TFT_WHITE);
+  disp_r.fillCircle(new_pupil[1].x - disp_rect_base[1].x, new_pupil[1].y - disp_rect_base[1].y, pupil_radius, TFT_BLACK);
 
   old_pupil[1].x = new_pupil[1].x;
   old_pupil[1].y = new_pupil[1].y;
@@ -109,8 +117,8 @@ void draw_dizzy_pupils() {
   new_pupil[0].x = (max_dist - max_dist * (degree / 1080.0F)) * cos(degree * DEG_TO_RAD) + eye_base[0].x;
   new_pupil[0].y = (max_dist - max_dist * (degree / 1080.0F)) * sin(degree * DEG_TO_RAD) + eye_base[0].y;
 
-  disp.fillCircle(old_pupil[0].x, old_pupil[0].y, pupil_radius, TFT_WHITE);
-  disp.fillCircle(new_pupil[0].x, new_pupil[0].y, pupil_radius, TFT_BLACK);
+  disp_l.fillCircle(old_pupil[0].x - disp_rect_base[0].x, old_pupil[0].y - disp_rect_base[0].y, pupil_radius, TFT_WHITE);
+  disp_l.fillCircle(new_pupil[0].x - disp_rect_base[0].x, new_pupil[0].y - disp_rect_base[0].y, pupil_radius, TFT_BLACK);
 
   old_pupil[0].x = new_pupil[0].x;
   old_pupil[0].y = new_pupil[0].y;
@@ -118,11 +126,35 @@ void draw_dizzy_pupils() {
   new_pupil[1].x = (max_dist - max_dist * (degree / 1080.0F)) * cos((degree + 180.0F) * DEG_TO_RAD) + eye_base[1].x;
   new_pupil[1].y = (max_dist - max_dist * (degree / 1080.0F)) * sin((degree + 180.0F) * DEG_TO_RAD) + eye_base[1].y;
 
-  disp.fillCircle(old_pupil[1].x, old_pupil[1].y, pupil_radius, TFT_WHITE);
-  disp.fillCircle(new_pupil[1].x, new_pupil[1].y, pupil_radius, TFT_BLACK);
+  disp_r.fillCircle(old_pupil[1].x - disp_rect_base[1].x, old_pupil[1].y - disp_rect_base[1].y, pupil_radius, TFT_WHITE);
+  disp_r.fillCircle(new_pupil[1].x - disp_rect_base[1].x, new_pupil[1].y - disp_rect_base[1].y, pupil_radius, TFT_BLACK);
 
   old_pupil[1].x = new_pupil[1].x;
   old_pupil[1].y = new_pupil[1].y;
+}
+
+void draw_eyelids() {
+  switch (eyelids_counter) {
+    case 1:
+    case 6:
+        disp_l.fillRect(0, 55 - disp_rect_base[0].y, 160, 60, TFT_BLACK);
+        disp_l.fillRect(0, 179 - disp_rect_base[0].y, 160, 7, TFT_BLACK);
+        disp_r.fillRect(0, 55 - disp_rect_base[1].y, 160, 60, TFT_BLACK);
+        disp_r.fillRect(0, 179 - disp_rect_base[1].y, 160, 7, TFT_BLACK);
+        break;
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        disp_l.fillRect(0, 55 - disp_rect_base[0].y, 160, 131, TFT_BLACK);
+        disp_r.fillRect(0, 55 - disp_rect_base[1].y, 160, 131, TFT_BLACK);
+        break;
+  }
+  eyelids_counter++;
+  if (eyelids_counter > eyelids_max) {
+    eyelids_counter = 0;
+    eyelids_max = random(190) + 10;
+  }
 }
 
 void setup() {
@@ -135,23 +167,29 @@ void setup() {
   M5.Display.setRotation(1);
   M5.Display.setBrightness(128);
 
-  disp.setPsram(true);
-  disp.createSprite(320, 240);
+  disp_l.createSprite(160, 131);
+  disp_r.createSprite(160, 131);
 
-  disp.fillScreen(TFT_BLACK);
-  disp.fillCircle(eye_base[0].x, eye_base[0].y, eye_radius, TFT_WHITE);
-  disp.fillCircle(eye_base[1].x, eye_base[1].y, eye_radius, TFT_WHITE);
+  disp_l.fillScreen(TFT_BLACK);
+  disp_r.fillScreen(TFT_BLACK);
+  disp_l.fillCircle(eye_base[0].x - disp_rect_base[0].x, eye_base[0].y - disp_rect_base[0].y, eye_radius, TFT_WHITE);
+  disp_r.fillCircle(eye_base[1].x - disp_rect_base[1].x, eye_base[1].y - disp_rect_base[1].y, eye_radius, TFT_WHITE);
 
   old_pupil[0].x = eye_base[0].x;
   old_pupil[0].y = eye_base[0].y;
   old_pupil[1].x = eye_base[1].x;
   old_pupil[1].y = eye_base[1].y;
   init_eyes();
+
+  M5.Display.startWrite();
 }
 
 void loop() {
   float ax, ay, az;
   M5.Imu.getAccel(&ax, &ay, &az);
+
+  disp_l.fillCircle(eye_base[0].x - disp_rect_base[0].x, eye_base[0].y - disp_rect_base[0].y, eye_radius, TFT_WHITE);
+  disp_r.fillCircle(eye_base[1].x - disp_rect_base[1].x, eye_base[1].y - disp_rect_base[1].y, eye_radius, TFT_WHITE);
 
   float total_acc = sqrt(ax * ax + ay * ay + az * az);
   if (total_acc > acc_threshould) {
@@ -184,6 +222,7 @@ void loop() {
       touch_point.x = t.x;
       touch_point.y = t.y;
       draw_gazing_pupils(touch_point);
+      draw_eyelids();
       break;
     case 2:
     case 6:
@@ -194,9 +233,13 @@ void loop() {
     default:
       if (!is_dizzy) {
         draw_center_pupils();
+        draw_eyelids();
       }
       break;
   }
 
-  disp.pushSprite(&M5.Display, 0, 0);
+  disp_l.pushSprite(&M5.Display, disp_rect_base[0].x, disp_rect_base[0].y);
+  disp_r.pushSprite(&M5.Display, disp_rect_base[1].x, disp_rect_base[1].y);
+
+  delay(20);
 }
