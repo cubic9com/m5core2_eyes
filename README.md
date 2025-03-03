@@ -1,54 +1,80 @@
 
 # Overview
 
-A sketch for [M5Stack Core2](https://docs.m5stack.com/#/en/core/core2).
-
-m5core2_eyes is a program showing two eyes which follow the touch movements on the screen of M5Stack Core2 as if they were watching it, like xeyes.  
+The m5core2_eyes project is a software that displays two eyes on the [M5Stack Core 2](https://docs.m5stack.com/#/en/core/core2) screen, which follow touch movements as if they are watching, similar to xeyes.
 
 \[日本語\]
 
-[M5Stack Core2](https://docs.m5stack.com/#/en/core/core2)用のスケッチです。
-
-m5core2_eyesは、M5Stack Core2の画面上のタッチを見つめる目を表示する、xeyes風のプログラムです。
+m5core2_eyesは、 [M5Stack Core 2](https://docs.m5stack.com/#/en/core/core2) の画面上のタッチを見つめる目を表示する、xeyes風のソフトウェアです。
 
 # Video
 
 ![video](video.gif)
 
-# Installing
+# Installation
 
-1. Download this project from [GitHub](https://github.com/cubic9com/m5core2_eyes/) .
-1. Download and install [Visual Studio Code ](https://code.visualstudio.com/) .
-1. Launch VSCode.
-1. Click the Extensions manager icon in the left Activity Bar.
-1. Search for `platformio ide` and install the `PlatformIO IDE` extension.
-1. Launch VSCode.
-1. Click the PlatformIO icon in the left Activity Bar.
-1. Click `QUICK ACCESS/PIO Home/Open` in the left Primary Sidebar.
-1. Click `Open Project` in the `PIO HOME` tab in the right Editor Groups.
-1. Open this project which you downloaded above.
-1. Click the PlatformIO icon in the left Activity Bar.
-1. Click `PROJECT TASKS/m5stack-core2/General/Upload` in the left Primary Sidebar.
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/cubic9com/m5core2_eyes.git
+    cd m5core2_voronoi
+    ```
+
+2. Install [Visual Studio Code](https://code.visualstudio.com/) if you haven't already.
+
+3. Open the project in Visual Studio Code:
+    ```sh
+    code .
+    ```
+
+4. Install `PlatformIO IDE` extension:
+    - Go to the Extensions view (`Ctrl+Shift+X`).
+    - Search for `PlatformIO IDE` and install it.
+
+5. Open PlatformIO Home:
+    - In the left Activity Bar, click the PlatformIO icon.
+    - In the left Primary Sidebar, Go to `QUICK ACCESS > PIO Home > Open`.
+
+6. Open the project:
+    - In the right Editor Groups, Click `Open Project` in the `PIO HOME` tab.
+    - Select the cloned `m5core2_voronoi` project folder.
+
+7. Upload the project:
+    - In the left Primary Sidebar, go to `PROJECT TASKS > m5stack-core2 > General > Upload`.
 
 \[日本語\]
 
-1. このプロジェクトを[GitHub](https://github.com/cubic9com/m5core2_eyes)からダウンロードする。
-1. [Visual Studio Code](https://code.visualstudio.com/)をダウンロードしてインストールする。
-1. VSCodeを起動する。
-1. 左のアクティビティバーにあるExtensions managerアイコンをクリックする。
-1. `platformio ide` を検索し、 `PlatformIO IDE` エクステンションをインストールする。
-1. VSCodeを起動する。
-1. 左のアクティビティバーのPlatformIOアイコンをクリックする。
-1. 左のプライマリサイドバーの `QUICK ACCESS/PIO Home/Open` をクリックする。
-1. 右側のエディタグループの `PIO HOME` タブにある `Open Project` をクリックする。
-1. 上記でダウンロードしたプロジェクトを開く。
-1. 左のアクティビティバーのPlatformIOアイコンをクリックする。
-1. 左のプライマリサイドバーの `PROJECT TASKS/m5stack-core2/General/Upload` をクリックする。
+1. リポジトリをクローンします:
+    ```sh
+    git clone https://github.com/cubic9com/m5core2_eyes.git
+    cd m5core2_voronoi
+    ```
 
-# LICENSE
+2. まだインストールしていない場合は、[Visual Studio Code](https://code.visualstudio.com/) をインストールします。
 
-Copyright (C) 2021, cubic9com All rights reserved.
+3. Visual Studio Code でプロジェクトを開きます:
+    ```sh
+    code .
+    ```
 
-This code is licensed under the MIT license.
+4. `PlatformIO IDE` 拡張機能をインストールします:
+    - 左サイドバーの「拡張機能」ビュー (`Ctrl+Shift+X`) を開きます。
+    - `PlatformIO IDE` を検索してインストールします。
 
-See file LICENSE for more information.
+5. PlatformIO Home を開きます:
+    - 左のアクティビティバーで PlatformIO アイコンをクリックします。
+    - 左のメインサイドバーから `QUICK ACCESS > PIO Home > Open` を選択します。
+
+6. プロジェクトを開きます:
+    - 右のエディターグループ内の `PIO HOME` タブで `Open Project` をクリックします。
+    - クローンした `m5core2_voronoi` プロジェクトフォルダーを選択します。
+
+7. プロジェクトをアップロードします:
+    - 左のメインサイドバーから `PROJECT TASKS > m5stack-core2 > General > Upload` を選択します。
+
+# License
+
+Copyright (C) 2025, cubic9com All rights reserved.
+
+This project is licensed under the MIT license.
+
+See file `LICENSE` file for details.
