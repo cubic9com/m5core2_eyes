@@ -2,40 +2,40 @@
 #include "EyesAnimation.h"
 
 /**
- * @brief ディスプレイの設定
+ * @brief Display settings
  */
-static constexpr uint8_t DISPLAY_ROTATION = 1;      // 横向き
-static constexpr uint8_t DISPLAY_BRIGHTNESS = 128;  // 明るさ（0-255）
+static constexpr uint8_t DISPLAY_ROTATION = 1;      // Landscape orientation
+static constexpr uint8_t DISPLAY_BRIGHTNESS = 128;  // Brightness (0-255)
 
 /**
- * @brief 目のアニメーションインスタンス
+ * @brief Eye animation instance
  */
 EyesAnimation eyes;
 
 /**
- * @brief 初期化処理
+ * @brief Initialization process
  */
 void setup() {
-  // M5Stackの初期化
+  // Initialize M5Stack
   auto cfg = M5.config();
-  cfg.internal_imu = true;  // IMU（加速度センサー）を有効化
+  cfg.internal_imu = true;  // Enable IMU (accelerometer)
   M5.begin(cfg);
   
-  // ディスプレイの初期化と高速化設定
+  // Initialize display and optimize settings
   M5.Display.init();
   M5.Display.setRotation(DISPLAY_ROTATION);
   M5.Display.setBrightness(DISPLAY_BRIGHTNESS);
-  M5.Display.setColorDepth(1);  // 1ビット色深度に設定
+  M5.Display.setColorDepth(1);  // Set to 1-bit color depth
 
-  // 目のアニメーションの初期化
+  // Initialize eye animation
   eyes.setup();
 
-  // 描画開始（連続描画モード）
+  // Start drawing (continuous drawing mode)
   M5.Display.startWrite();
 }
 
 /**
- * @brief メインループ処理
+ * @brief Main loop process
  */
 void loop() {
   eyes.loop();

@@ -4,39 +4,39 @@
 #include "TouchHandler.h"
 
 /**
- * @brief 目の状態を表す列挙型
+ * @brief Enumeration representing eye state
  */
 enum class EyeState {
-  NORMAL,    // 通常状態
-  GAZING,    // 視線追従状態
-  DIZZY      // めまい状態
+  NORMAL,    // Normal state
+  GAZING,    // Gaze following state
+  DIZZY      // Dizzy state
 };
 
 /**
- * @brief まばたきの状態を表す列挙型
+ * @brief Enumeration representing blink state
  */
 enum class BlinkState {
-  OPEN,           // 開いている
-  HALF_CLOSED,    // 半分閉じている
-  CLOSED          // 完全に閉じている
+  OPEN,           // Open
+  HALF_CLOSED,    // Half closed
+  CLOSED          // Completely closed
 };
 
 
 /**
- * @brief 単一の目を管理するクラス
+ * @brief Class managing a single eye
  */
 class Eye {
 public:
-  // 目の設定
+  // Eye settings
   static constexpr uint8_t EYE_RADIUS = 65;
   static constexpr uint8_t PUPIL_RADIUS = 13;
   static constexpr uint8_t MAX_PUPIL_DISTANCE = 40;
   
-  // スプライトの設定
+  // Sprite settings
   static constexpr uint8_t SPRITE_WIDTH = 160;
   static constexpr uint8_t SPRITE_HEIGHT = 131;
   
-  // 目の位置
+  // Eye position
   static constexpr uint8_t EYE_BASE_Y = 120;
   static constexpr uint8_t EYE_LEFT_X = 80;
   static constexpr uint8_t EYE_RIGHT_X = 240;
@@ -44,102 +44,102 @@ public:
   
 public:
   /**
-   * @brief コンストラクタ
-   * @param baseX 目の中心X座標
-   * @param baseY 目の中心Y座標
-   * @param displayX ディスプレイ上のX座標
-   * @param displayY ディスプレイ上のY座標
+   * @brief Constructor
+   * @param baseX Center X coordinate of the eye
+   * @param baseY Center Y coordinate of the eye
+   * @param displayX X coordinate on the display
+   * @param displayY Y coordinate on the display
    */
   Eye(int16_t baseX, int16_t baseY, int16_t displayX, int16_t displayY);
   
   /**
-   * @brief 目をクリアする
+   * @brief Clear the eye
    */
   void clear();
   
   /**
-   * @brief 白目を描画する
+   * @brief Draw the white part of the eye
    */
   void drawWhite();
   
   /**
-   * @brief 瞳孔を初期位置に戻す
+   * @brief Reset pupil to initial position
    */
   void resetPupil();
   
   /**
-   * @brief 瞳孔を中央に描画する（微小なランダム動きあり）
-   * @param saccades 微小な動きの量
+   * @brief Draw pupil in the center (with small random movements)
+   * @param saccades Amount of small movements
    */
   void drawCenterPupil(const Point& saccades);
   
   /**
-   * @brief 視線追従の瞳孔を描画する
-   * @param targetPoint 視線の目標点
-   * @param saccades 微小な動きの量
+   * @brief Draw gaze-following pupil
+   * @param targetPoint Target point of the gaze
+   * @param saccades Amount of small movements
    */
   void drawGazingPupil(const Point& targetPoint, const Point& saccades);
   
   /**
-   * @brief めまい効果の瞳孔を描画する
-   * @param degree 回転角度
-   * @param offsetDegree 角度オフセット
+   * @brief Draw dizzy effect pupil
+   * @param degree Rotation angle
+   * @param offsetDegree Angle offset
    */
   void drawDizzyPupil(float degree, float offsetDegree = 0.0F);
   
   /**
-   * @brief まばたきを描画する
-   * @param state まばたきの状態
+   * @brief Draw blink
+   * @param state Blink state
    */
   void drawBlink(BlinkState state);
   
   /**
-   * @brief スプライトをディスプレイに表示する
-   * @param display ディスプレイオブジェクト
+   * @brief Render sprite to display
+   * @param display Display object
    */
   void render(M5GFX* display);
   
 private:
-  Point basePoint;       // 目の中心座標
-  Point displayOffset;   // ディスプレイ上のオフセット
-  Point pupilPosition;   // 瞳孔の現在位置
-  BlinkState lastBlinkState; // 前回のまばたき状態
-  M5Canvas canvas;       // 描画用キャンバス
+  Point basePoint;       // Center coordinates of the eye
+  Point displayOffset;   // Offset on the display
+  Point pupilPosition;   // Current position of the pupil
+  BlinkState lastBlinkState; // Previous blink state
+  M5Canvas canvas;       // Canvas for drawing
   
   /**
-   * @brief 瞳孔を消去する
+   * @brief Erase the pupil
    */
   void erasePupil();
   
   /**
-   * @brief 瞳孔を描画する
+   * @brief Draw the pupil
    */
   void drawPupil();
   
   /**
-   * @brief 瞳孔を更新する
-   * @param newPosition 新しい瞳孔の位置
+   * @brief Update the pupil
+   * @param newPosition New position of the pupil
    */
   void updatePupil(const Point& newPosition);
   
   /**
-   * @brief 視線追従の瞳孔位置を計算する
-   * @param targetPoint 視線の目標点
-   * @param saccades 微小な動きの量
-   * @return 新しい瞳孔の位置
+   * @brief Calculate pupil position for gaze following
+   * @param targetPoint Target point of the gaze
+   * @param saccades Amount of small movements
+   * @return New position of the pupil
    */
   Point computeGazingPosition(const Point& targetPoint, const Point& saccades);
   
   /**
-   * @brief グローバル座標をスプライト内のローカル座標に変換する
-   * @param globalPoint グローバル座標
-   * @return スプライト内のローカル座標
+   * @brief Convert global coordinates to local coordinates within the sprite
+   * @param globalPoint Global coordinates
+   * @return Local coordinates within the sprite
    */
   Point toLocalCoordinates(const Point& globalPoint) const;
   
   /**
-   * @brief 指定した色で瞳孔を描画する
-   * @param color 描画色
+   * @brief Draw pupil with specified color
+   * @param color Drawing color
    */
   void drawPupilWithColor(uint16_t color);
 };

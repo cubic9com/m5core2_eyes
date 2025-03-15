@@ -1,20 +1,20 @@
 #include "TouchHandler.h"
 
 /**
- * @brief コンストラクタ
+ * @brief Constructor
  */
 TouchHandler::TouchHandler() : lastTouchState(TouchState::NONE), touchPoint(0, 0) {
 }
 
 /**
- * @brief タッチ状態を更新する
- * @return 現在のタッチ状態
+ * @brief Update touch state
+ * @return Current touch state
  */
 TouchState TouchHandler::update() {
   static uint32_t lastUpdateTime = 0;
   uint32_t currentTime = millis();
   
-  // タッチ更新の頻度を制限（25ms間隔）
+  // Limit touch update frequency (25ms interval)
   if (currentTime - lastUpdateTime < 25) {
     return lastTouchState;
   }
@@ -25,41 +25,41 @@ TouchState TouchHandler::update() {
   
   TouchState currentState = interpretTouchState(touch.state);
   
-  // タッチ位置の更新（タッチ中の場合のみ）
+  // Update touch position (only when touching)
   if (currentState == TouchState::TOUCHING) {
     touchPoint.x = touch.x;
     touchPoint.y = touch.y;
   }
   
-  // 前回の状態を保存
+  // Save previous state
   lastTouchState = currentState;
   
   return currentState;
 }
 
 /**
- * @brief 現在のタッチ位置を取得する
- * @return タッチ位置
+ * @brief Get current touch position
+ * @return Touch position
  */
 const Point& TouchHandler::getTouchPoint() const {
   return touchPoint;
 }
 
 /**
- * @brief 前回のタッチ状態を取得する
- * @return 前回のタッチ状態
+ * @brief Get previous touch state
+ * @return Previous touch state
  */
 TouchState TouchHandler::getLastTouchState() const {
   return lastTouchState;
 }
 
 /**
- * @brief M5Stackのタッチ状態を解釈する
- * @param state M5Stackのタッチ状態
- * @return 解釈されたタッチ状態
+ * @brief Interpret M5Stack touch state
+ * @param state M5Stack touch state
+ * @return Interpreted touch state
  */
 TouchState TouchHandler::interpretTouchState(uint8_t state) {
-  // タッチ状態の判定
+  // Determine touch state
   switch (state) {
     case m5::touch_state_t::touch:
     case m5::touch_state_t::touch_begin:

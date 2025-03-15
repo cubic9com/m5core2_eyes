@@ -2,11 +2,11 @@
 #include "EyesAnimation.h"
 
 /**
- * @brief コンストラクタ
- * @param baseX 目の中心X座標
- * @param baseY 目の中心Y座標
- * @param displayX ディスプレイ上のX座標
- * @param displayY ディスプレイ上のY座標
+ * @brief Constructor
+ * @param baseX Center X coordinate of the eye
+ * @param baseY Center Y coordinate of the eye
+ * @param displayX X coordinate on the display
+ * @param displayY Y coordinate on the display
  */
 Eye::Eye(int16_t baseX, int16_t baseY, int16_t displayX, int16_t displayY) 
   : basePoint(baseX, baseY),
@@ -14,21 +14,21 @@ Eye::Eye(int16_t baseX, int16_t baseY, int16_t displayX, int16_t displayY)
     pupilPosition(baseX, baseY),
     lastBlinkState(BlinkState::OPEN)
 {
-  // 1ビット色深度でスプライトを作成
+  // Create sprite with 1-bit color depth
   canvas.setColorDepth(1);
   canvas.createSprite(SPRITE_WIDTH, SPRITE_HEIGHT);
   clear();
 }
 
 /**
- * @brief 目をクリアする
+ * @brief Clear the eye
  */
 void Eye::clear() {
   canvas.fillScreen(TFT_BLACK);
 }
 
 /**
- * @brief 白目を描画する
+ * @brief Draw the white part of the eye
  */
 void Eye::drawWhite() {
   Point localCenter = toLocalCoordinates(basePoint);
@@ -36,7 +36,7 @@ void Eye::drawWhite() {
 }
 
 /**
- * @brief 瞳孔を初期位置に戻す
+ * @brief Reset pupil to initial position
  */
 void Eye::resetPupil() {
   erasePupil();
@@ -45,8 +45,8 @@ void Eye::resetPupil() {
 }
 
 /**
- * @brief 瞳孔を中央に描画する（微小なランダム動きあり）
- * @param saccades 微小な動きの量
+ * @brief Draw pupil in the center (with small random movements)
+ * @param saccades Amount of small movements
  */
 void Eye::drawCenterPupil(const Point& saccades) {
   Point newPosition = basePoint + saccades;
@@ -54,9 +54,9 @@ void Eye::drawCenterPupil(const Point& saccades) {
 }
 
 /**
- * @brief 視線追従の瞳孔を描画する
- * @param targetPoint 視線の目標点
- * @param saccades 微小な動きの量
+ * @brief Draw gaze-following pupil
+ * @param targetPoint Target point of the gaze
+ * @param saccades Amount of small movements
  */
 void Eye::drawGazingPupil(const Point& targetPoint, const Point& saccades) {
   Point newPosition = computeGazingPosition(targetPoint, saccades);
@@ -64,16 +64,16 @@ void Eye::drawGazingPupil(const Point& targetPoint, const Point& saccades) {
 }
 
 /**
- * @brief めまい効果の瞳孔を描画する
- * @param degree 回転角度
- * @param offsetDegree 角度オフセット（デフォルト値: 0.0F）
+ * @brief Draw dizzy effect pupil
+ * @param degree Rotation angle
+ * @param offsetDegree Angle offset (default value: 0.0F)
  */
 void Eye::drawDizzyPupil(float degree, float offsetDegree) {
-  // 距離係数の計算（角度が大きくなるほど中心に近づく）
+  // Calculate distance factor (closer to center as angle increases)
   float distanceFactor = 1.0F - (degree / EyesAnimation::DIZZY_DISTANCE_FACTOR);
   float distance = MAX_PUPIL_DISTANCE * distanceFactor;
   
-  // 角度から位置を計算（DEG_TO_RAD = M_PI / 180.0F）
+  // Calculate position from angle (DEG_TO_RAD = M_PI / 180.0F)
   float angleRad = (degree + offsetDegree) * DEG_TO_RAD;
   Point newPosition(
     static_cast<int16_t>(distance * cos(angleRad)) + basePoint.x,
@@ -84,21 +84,21 @@ void Eye::drawDizzyPupil(float degree, float offsetDegree) {
 }
 
 /**
- * @brief まばたきを描画する
- * @param state まばたきの状態
+ * @brief Draw blink
+ * @param state Blink state
  */
 void Eye::drawBlink(BlinkState state) {
-  // 前回と同じ状態なら何もしない
+  // Do nothing if state is the same as before
   if (state == lastBlinkState) {
     return;
   }
   
-  // ローカル座標系でのディスプレイベースY座標
+  // Display base Y coordinate in local coordinate system
   int16_t localBaseY = DISPLAY_BASE_Y - displayOffset.y;
   
   switch (state) {
     case BlinkState::HALF_CLOSED:
-      // 半分閉じた状態 - 上部と下部に黒い矩形を描画
+      // Half-closed state - draw black rectangles at top and bottom
       canvas.fillRect(
         0, 
         localBaseY, 
@@ -116,50 +116,50 @@ void Eye::drawBlink(BlinkState state) {
       break;
       
     case BlinkState::CLOSED:
-      // 完全に閉じた状態 - 全体を黒で塗りつぶす（高速化のためfillScreenを使用）
+      // Completely closed state - fill entire screen with black (using fillScreen for optimization)
       canvas.fillScreen(TFT_BLACK);
       break;
       
     case BlinkState::OPEN:
-      // 開いた状態は白目を再描画
+      // Open state - redraw the white part of the eye
       drawWhite();
       drawPupil();
       break;
       
     default:
-      // 未知の状態の場合は何もしない
+      // Do nothing for unknown states
       break;
   }
   
-  // 状態を更新
+  // Update state
   lastBlinkState = state;
 }
 
 /**
- * @brief スプライトをディスプレイに表示する
- * @param display ディスプレイオブジェクト
+ * @brief Render sprite to display
+ * @param display Display object
  */
 void Eye::render(M5GFX* display) {
   canvas.pushSprite(display, displayOffset.x, displayOffset.y);
 }
 
 /**
- * @brief 瞳孔を消去する
+ * @brief Erase the pupil
  */
 void Eye::erasePupil() {
   drawPupilWithColor(TFT_WHITE);
 }
 
 /**
- * @brief 瞳孔を描画する
+ * @brief Draw the pupil
  */
 void Eye::drawPupil() {
   drawPupilWithColor(TFT_BLACK);
 }
 
 /**
- * @brief 指定した色で瞳孔を描画する
- * @param color 描画色
+ * @brief Draw pupil with specified color
+ * @param color Drawing color
  */
 void Eye::drawPupilWithColor(uint16_t color) {
   Point localPupil = toLocalCoordinates(pupilPosition);
@@ -167,11 +167,11 @@ void Eye::drawPupilWithColor(uint16_t color) {
 }
 
 /**
- * @brief 瞳孔を更新する
- * @param newPosition 新しい瞳孔の位置
+ * @brief Update the pupil
+ * @param newPosition New position of the pupil
  */
 void Eye::updatePupil(const Point& newPosition) {
-  // 位置が変わっていない場合は何もしない
+  // Do nothing if position hasn't changed
   if (pupilPosition.x == newPosition.x && pupilPosition.y == newPosition.y) {
     return;
   }
@@ -182,9 +182,9 @@ void Eye::updatePupil(const Point& newPosition) {
 }
 
 /**
- * @brief グローバル座標をスプライト内のローカル座標に変換する
- * @param globalPoint グローバル座標
- * @return スプライト内のローカル座標
+ * @brief Convert global coordinates to local coordinates within the sprite
+ * @param globalPoint Global coordinates
+ * @return Local coordinates within the sprite
  */
 Point Eye::toLocalCoordinates(const Point& globalPoint) const {
   return Point(
@@ -194,30 +194,30 @@ Point Eye::toLocalCoordinates(const Point& globalPoint) const {
 }
 
 /**
- * @brief 視線追従の瞳孔位置を計算する
- * @param targetPoint 視線の目標点
- * @param saccades 微小な動きの量
- * @return 新しい瞳孔の位置
+ * @brief Calculate pupil position for gaze following
+ * @param targetPoint Target point of the gaze
+ * @param saccades Amount of small movements
+ * @return New position of the pupil
  */
 Point Eye::computeGazingPosition(const Point& targetPoint, const Point& saccades) {
-  // 目の中心から目標点への差分ベクトル
+  // Difference vector from eye center to target point
   Point diff = targetPoint - basePoint;
   
-  // 角度と距離を計算
+  // Calculate angle and distance
   double angle = atan2(diff.y, diff.x);
   double dist = std::hypot(diff.x, diff.y);
   
   Point result;
   if (dist > MAX_PUPIL_DISTANCE) {
-    // 最大距離を超える場合は、最大距離で制限
+    // If exceeding maximum distance, limit to maximum distance
     result.x = static_cast<int16_t>(MAX_PUPIL_DISTANCE * cos(angle)) + basePoint.x;
     result.y = static_cast<int16_t>(MAX_PUPIL_DISTANCE * sin(angle)) + basePoint.y;
   } else {
-    // 最大距離内の場合は、そのまま使用
+    // If within maximum distance, use as is
     result = basePoint + diff;
   }
   
-  // 微小な動きを追加
+  // Add small movements
   result = result + saccades;
   
   return result;

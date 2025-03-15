@@ -3,7 +3,7 @@
 #include <M5Unified.h>
 
 /**
- * @brief 座標を表す構造体
+ * @brief Structure representing coordinates
  */
 struct Point {
   int16_t x;
@@ -22,51 +22,51 @@ struct Point {
 };
 
 /**
- * @brief タッチ状態を表す列挙型
+ * @brief Enumeration representing touch state
  */
 enum class TouchState {
-  NONE,       // タッチなし
-  TOUCHING,   // タッチ中
-  RELEASED,   // タッチ終了
-  MULTI_TOUCH // 複数タッチ
+  NONE,       // No touch
+  TOUCHING,   // Touching
+  RELEASED,   // Touch released
+  MULTI_TOUCH // Multiple touches
 };
 
 /**
- * @brief タッチ入力を管理するクラス
+ * @brief Class managing touch input
  */
 class TouchHandler {
 public:
   /**
-   * @brief コンストラクタ
+   * @brief Constructor
    */
   TouchHandler();
   
   /**
-   * @brief タッチ状態を更新する
-   * @return 現在のタッチ状態
+   * @brief Update touch state
+   * @return Current touch state
    */
   TouchState update();
   
   /**
-   * @brief 現在のタッチ位置を取得する
-   * @return タッチ位置
+   * @brief Get current touch position
+   * @return Touch position
    */
   const Point& getTouchPoint() const;
   
   /**
-   * @brief 前回のタッチ状態を取得する
-   * @return 前回のタッチ状態
+   * @brief Get previous touch state
+   * @return Previous touch state
    */
   TouchState getLastTouchState() const;
   
 private:
-  TouchState lastTouchState;  // 前回のタッチ状態
-  Point touchPoint;           // タッチ位置
+  TouchState lastTouchState;  // Previous touch state
+  Point touchPoint;           // Touch position
   
   /**
-   * @brief M5Stackのタッチ状態を解釈する
-   * @param state M5Stackのタッチ状態
-   * @return 解釈されたタッチ状態
+   * @brief Interpret M5Stack touch state
+   * @param state M5Stack touch state
+   * @return Interpreted touch state
    */
   TouchState interpretTouchState(uint8_t state);
 };

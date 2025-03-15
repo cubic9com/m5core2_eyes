@@ -5,18 +5,18 @@
 #include "Eye.h"
 
 /**
- * @brief 目のアニメーションを管理するクラス
+ * @brief Class managing eye animations
  */
 class EyesAnimation {
 public:
-  // めまい効果の設定
+  // Dizzy effect settings
   static constexpr float ACCELERATION_THRESHOLD = 1.4F;
   static constexpr uint8_t NUM_OF_ROTATION = 3;
   static constexpr float DIZZY_ROTATION_SPEED = 15.0F;
   static constexpr float DIZZY_TOTAL_DEGREES = 360.0F * NUM_OF_ROTATION;
   static constexpr float DIZZY_DISTANCE_FACTOR = 1080.0F;
   
-  // まばたきの設定
+  // Blink settings
   static constexpr uint8_t BLINK_INITIAL_MAX = 20;
   static constexpr uint8_t BLINK_RANDOM_MIN = 10;
   static constexpr uint8_t BLINK_RANDOM_MAX = 200;
@@ -24,108 +24,108 @@ public:
   static constexpr uint8_t BLINK_HALF_CLOSED_BOTTOM_HEIGHT = 7;
   static constexpr uint8_t BLINK_HALF_CLOSED_BOTTOM_Y = 179;
   
-  // アニメーションの設定
+  // Animation settings
   static constexpr uint8_t ANIMATION_DELAY_MS = 20;
   static constexpr uint8_t SACCADES_MAX = 11;
   static constexpr uint8_t SACCADES_DIVISOR = 10;
 public:
   /**
-   * @brief コンストラクタ
+   * @brief Constructor
    */
   EyesAnimation();
   
   /**
-   * @brief 初期化処理
-   * @return 初期化が成功したかどうか
+   * @brief Initialization process
+   * @return Whether initialization was successful
    */
   bool setup();
   
   /**
-   * @brief メインループ処理
+   * @brief Main loop process
    */
   void loop();
   
   /**
-   * @brief タッチハンドラーを取得する
-   * @return タッチハンドラーへの参照
+   * @brief Get touch handler
+   * @return Reference to touch handler
    */
   TouchHandler& getTouchHandler();
   
 private:
-  Eye leftEye;           // 左目
-  Eye rightEye;          // 右目
-  TouchHandler touchHandler; // タッチハンドラー
-  EyeState state;        // 目の状態
-  float degree;          // めまい効果の角度
-  uint8_t blinkCounter;  // まばたきカウンター
-  uint8_t blinkMaxCount; // まばたきの最大カウント
+  Eye leftEye;           // Left eye
+  Eye rightEye;          // Right eye
+  TouchHandler touchHandler; // Touch handler
+  EyeState state;        // Eye state
+  float degree;          // Dizzy effect angle
+  uint8_t blinkCounter;  // Blink counter
+  uint8_t blinkMaxCount; // Maximum blink count
   
   /**
-   * @brief 目をリセットする
+   * @brief Reset eyes
    */
   void resetEyes();
   
   /**
-   * @brief 中央に瞳孔を描画する
+   * @brief Draw pupils in the center
    */
   void drawCenterEyes();
   
   /**
-   * @brief 視線追従の瞳孔を描画する
-   * @param touchPoint タッチされた座標
+   * @brief Draw gaze-following pupils
+   * @param touchPoint Touch coordinates
    */
   void drawGazingEyes(const Point& touchPoint);
   
   /**
-   * @brief めまい効果の瞳孔を描画する
+   * @brief Draw dizzy effect pupils
    */
   void drawDizzyEyes();
   
   /**
-   * @brief まばたきを描画する
+   * @brief Draw blink
    */
   void drawBlink();
   
   /**
-   * @brief 白目部分を再描画する
+   * @brief Redraw the white parts of the eyes
    */
   void redrawWhiteEyes();
   
   /**
-   * @brief 加速度センサーの値を確認し、めまい効果を開始するかどうかを判断する
-   * @return 状態が変化した場合はtrue
+   * @brief Check accelerometer values and determine whether to start dizzy effect
+   * @return true if state changed
    */
   bool checkAccelerationForDizzy();
   
   /**
-   * @brief 現在の状態に基づいて目を更新する
+   * @brief Update eyes based on current state
    */
   void updateEyesBasedOnState();
   
   /**
-   * @brief 通常状態の目の処理
+   * @brief Handle normal state eyes
    */
   void handleNormalState();
   
   /**
-   * @brief 両目をディスプレイに描画する
+   * @brief Render both eyes to display
    */
   void renderEyes();
   
   /**
-   * @brief 現在のまばたき状態を決定する
-   * @return 現在のまばたき状態
+   * @brief Determine current blink state
+   * @return Current blink state
    */
   BlinkState determineBlinkState();
   
   /**
-   * @brief まばたきカウンターを更新する
+   * @brief Update blink counter
    */
   void updateBlinkCounter();
   
   /**
-   * @brief サッケード（微小な目の動き）を生成する
-   * @return 微小な動きの量
+   * @brief Generate saccades (small eye movements)
+   * @return Amount of small movements
    */
   Point generateSaccades();
 };
