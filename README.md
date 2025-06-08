@@ -19,7 +19,27 @@ The M5Stack Core 2 offers a compelling combination of features: a compact, cute 
 
 M5Stack Core2は、コンパクトでかわいらしいデザイン、直感的に操作できるタッチスクリーン、そして加速度センサーを内蔵しているなど、魅力的な機能が揃ったデバイスです。私は、こうしたM5Stackの特徴を活かした面白いコンテンツを作りたいと思いました。そんなときに思い出したのが「xeyes」です。マウスカーソルを追いかけるアニメーションの目が印象的な、懐かしいプログラムです。私は、この遊び心のある発想をM5Stackで再現し、さらに加速度センサーで進化させたら面白いのでは？と思いました。こうして、タッチに合わせて目が動き、軽くトンと叩くと目を回す、遊び心あふれる「デジタルの目」が誕生しました。
 
-# Installation / インストール
+# Installation / インストール方法
+
+1. Register an [M5Stack Community](https://community.m5stack.com/) account if you haven't already.
+1. Launch the [M5Burner](https://docs.m5stack.com/en/download) .
+1. Click `USER CUSTOM` in the lower left corner.
+1. Log in to the M5Stack Community.
+1. Click the `Share Burn` button.
+1. Enter `NOmrydGI4FXocM31` in the `Share Code` field.
+1. Click the lightning icon :zap: .
+
+\[日本語\]
+
+1. [M5Stack Community](https://community.m5stack.com/) のアカウントをまだ登録していない場合は登録してください。
+1. [M5Burner](https://docs.m5stack.com/en/download) を起動します。
+1. 左下隅の `USER CUSTOM` をクリックします。
+1. M5Stack Communityにログインします。
+1. `Share Burn` ボタンをクリックします。
+1. `Share Code` フィールドに `NOmrydGI4FXocM31` と入力します。
+1. 稲妻アイコン :zap: をクリックします。
+
+# Installation for developers / インストール方法（開発者向け）
 
 1. Clone the repository:
     ```sh
