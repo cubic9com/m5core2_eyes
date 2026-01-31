@@ -34,24 +34,16 @@ EyesAnimation::EyesAnimation()
  * @return Whether initialization was successful
  */
 bool EyesAnimation::setup() {
-  try {    
-    // Initial drawing
-    resetEyes();
-    
-    // Check IMU initialization
-    float ax, ay, az;
-    if (!M5.Imu.getAccel(&ax, &ay, &az)) {
-      Serial.println("Warning: IMU initialization failed. Dizzy effect may not work.");
-    }
-    
-    return true;
-  } catch (const std::exception& e) {
-    Serial.printf("Setup error: %s\n", e.what());
-    return false;
-  } catch (...) {
-    Serial.println("Unknown setup error occurred");
-    return false;
+  // Initial drawing
+  resetEyes();
+  
+  // Check IMU initialization
+  float ax, ay, az;
+  if (!M5.Imu.getAccel(&ax, &ay, &az)) {
+    Serial.println("Warning: IMU initialization failed. Dizzy effect may not work.");
   }
+  
+  return true;
 }
 
 /**
@@ -70,8 +62,8 @@ void EyesAnimation::loop() {
   
   lastFrameTime = currentTime;
   
-  // Check accelerometer (10ms interval)
-  if (currentTime - lastAccelCheckTime > 10) {
+  // Check accelerometer (30ms interval)
+  if (currentTime - lastAccelCheckTime > 30) {
     lastAccelCheckTime = currentTime;
     if (checkAccelerationForDizzy()) {
       needsRedraw = true;

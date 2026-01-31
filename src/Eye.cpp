@@ -1,5 +1,6 @@
 #include "Eye.h"
 #include "EyesAnimation.h"
+#include "MathLookup.h"
 
 /**
  * @brief Constructor
@@ -73,11 +74,11 @@ void Eye::drawDizzyPupil(float degree, float offsetDegree) {
   float distanceFactor = 1.0F - (degree / EyesAnimation::DIZZY_DISTANCE_FACTOR);
   float distance = MAX_PUPIL_DISTANCE * distanceFactor;
   
-  // Calculate position from angle (DEG_TO_RAD = M_PI / 180.0F)
-  float angleRad = (degree + offsetDegree) * DEG_TO_RAD;
+  // Calculate position from angle using fast lookup table
+  float angleDegrees = degree + offsetDegree;
   Point newPosition(
-    static_cast<int16_t>(distance * cos(angleRad)) + basePoint.x,
-    static_cast<int16_t>(distance * sin(angleRad)) + basePoint.y
+    static_cast<int16_t>(distance * FastMath::fastCos(angleDegrees)) + basePoint.x,
+    static_cast<int16_t>(distance * FastMath::fastSin(angleDegrees)) + basePoint.y
   );
   
   updatePupil(newPosition);
@@ -203,15 +204,17 @@ Point Eye::computeGazingPosition(const Point& targetPoint, const Point& saccades
   // Difference vector from eye center to target point
   Point diff = targetPoint - basePoint;
   
-  // Calculate angle and distance
-  double angle = atan2(diff.y, diff.x);
-  double dist = std::hypot(diff.x, diff.y);
+  // Calculate angle and distance using fast math functions
+  float angleRad = FastMath::fastAtan2(diff.y, diff.x);
+  float dist = FastMath::fastHypot(diff.x, diff.y);
   
   Point result;
   if (dist > MAX_PUPIL_DISTANCE) {
     // If exceeding maximum distance, limit to maximum distance
-    result.x = static_cast<int16_t>(MAX_PUPIL_DISTANCE * cos(angle)) + basePoint.x;
-    result.y = static_cast<int16_t>(MAX_PUPIL_DISTANCE * sin(angle)) + basePoint.y;
+    // Convert radians to degrees for lookup table
+    float angleDeg = FastMath::radiansToDegrees(angleRad);
+    result.x = static_cast<int16_t>(MAX_PUPIL_DISTANCE * FastMath::fastCos(angleDeg)) + basePoint.x;
+    result.y = static_cast<int16_t>(MAX_PUPIL_DISTANCE * FastMath::fastSin(angleDeg)) + basePoint.y;
   } else {
     // If within maximum distance, use as is
     result = basePoint + diff;

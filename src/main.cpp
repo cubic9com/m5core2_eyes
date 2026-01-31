@@ -21,6 +21,9 @@ void setup() {
   cfg.internal_imu = true;  // Enable IMU (accelerometer)
   M5.begin(cfg);
   
+  // Initialize random seed using hardware RNG
+  randomSeed(esp_random());
+  
   // Initialize display and optimize settings
   M5.Display.init();
   M5.Display.setRotation(DISPLAY_ROTATION);
