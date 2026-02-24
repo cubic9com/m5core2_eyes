@@ -16,6 +16,7 @@ Eye::Eye(int16_t baseX, int16_t baseY, int16_t displayX, int16_t displayY)
     lastBlinkState(BlinkState::OPEN)
 {
   // Create sprite with 1-bit color depth
+  canvas.setPsram(false);
   canvas.setColorDepth(1);
   canvas.createSprite(SPRITE_WIDTH, SPRITE_HEIGHT);
   clear();
@@ -33,7 +34,7 @@ void Eye::clear() {
  */
 void Eye::drawWhite() {
   Point localCenter = toLocalCoordinates(basePoint);
-  canvas.fillCircle(localCenter.x, localCenter.y, EYE_RADIUS, TFT_WHITE);
+  canvas.fillEllipse(localCenter.x, localCenter.y, EYE_RADIUS_X, EYE_RADIUS_Y, TFT_WHITE);
 }
 
 /**
@@ -50,8 +51,28 @@ void Eye::resetPupil() {
  * @param saccades Amount of small movements
  */
 void Eye::drawCenterPupil(const Point& saccades) {
-  Point newPosition = basePoint + saccades;
-  updatePupil(newPosition);
+  Point diff = saccades;
+  float dist = FastMath::fastHypot(diff.x, diff.y);
+  
+  Point result;
+  if (dist > 0) {
+    // Calculate angle
+    float angleDeg = FastMath::radiansToDegrees(FastMath::fastAtan2(diff.y, diff.x));
+    float maxDist = getMaxPupilDistanceAtAngle(angleDeg);
+    
+    if (dist > maxDist) {
+      // Scale to fit within ellipse
+      float scale = maxDist / dist;
+      result.x = static_cast<int16_t>(diff.x * scale) + basePoint.x;
+      result.y = static_cast<int16_t>(diff.y * scale) + basePoint.y;
+    } else {
+      result = basePoint + saccades;
+    }
+  } else {
+    result = basePoint;
+  }
+  
+  updatePupil(result);
 }
 
 /**
@@ -72,13 +93,13 @@ void Eye::drawGazingPupil(const Point& targetPoint, const Point& saccades) {
 void Eye::drawDizzyPupil(float degree, float offsetDegree) {
   // Calculate distance factor (closer to center as angle increases)
   float distanceFactor = 1.0F - (degree / EyesAnimation::DIZZY_DISTANCE_FACTOR);
-  float distance = MAX_PUPIL_DISTANCE * distanceFactor;
   
   // Calculate position from angle using fast lookup table
   float angleDegrees = degree + offsetDegree;
+  float maxDist = getMaxPupilDistanceAtAngle(angleDegrees);
   Point newPosition(
-    static_cast<int16_t>(distance * FastMath::fastCos(angleDegrees)) + basePoint.x,
-    static_cast<int16_t>(distance * FastMath::fastSin(angleDegrees)) + basePoint.y
+    static_cast<int16_t>(maxDist * distanceFactor * FastMath::fastCos(angleDegrees)) + basePoint.x,
+    static_cast<int16_t>(maxDist * distanceFactor * FastMath::fastSin(angleDegrees)) + basePoint.y
   );
   
   updatePupil(newPosition);
@@ -164,7 +185,7 @@ void Eye::drawPupil() {
  */
 void Eye::drawPupilWithColor(uint16_t color) {
   Point localPupil = toLocalCoordinates(pupilPosition);
-  canvas.fillCircle(localPupil.x, localPupil.y, PUPIL_RADIUS, color);
+  canvas.fillEllipse(localPupil.x, localPupil.y, PUPIL_RADIUS_X, PUPIL_RADIUS_Y, color);
 }
 
 /**
@@ -195,6 +216,27 @@ Point Eye::toLocalCoordinates(const Point& globalPoint) const {
 }
 
 /**
+ * @brief Get maximum pupil distance at a given angle
+ * @param angleDeg Angle in degrees
+ * @return Maximum distance pupil center can move at this angle
+ */
+float Eye::getMaxPupilDistanceAtAngle(float angleDeg) const {
+  float cosA = FastMath::fastCos(angleDeg);
+  float sinA = FastMath::fastSin(angleDeg);
+  
+  // Pupil movement range (radius of the white of the eye - radius of the pupil)
+  float a = EYE_RADIUS_X - PUPIL_RADIUS_X;
+  float b = EYE_RADIUS_Y - PUPIL_RADIUS_Y;
+  
+  // Ellipse radius in polar coordinates: r = ab / sqrt((b*cos)² + (a*sin)²)
+  float denominator = FastMath::fastHypot(b * cosA, a * sinA);
+  float maxDist = (a * b) / denominator;
+  
+  // Apply a margin factor to prevent the pupil from clinging to the outline of the white of the eye
+  return maxDist * 0.88F;
+}
+
+/**
  * @brief Calculate pupil position for gaze following
  * @param targetPoint Target point of the gaze
  * @param saccades Amount of small movements
@@ -204,24 +246,37 @@ Point Eye::computeGazingPosition(const Point& targetPoint, const Point& saccades
   // Difference vector from eye center to target point
   Point diff = targetPoint - basePoint;
   
-  // Calculate angle and distance using fast math functions
-  float angleRad = FastMath::fastAtan2(diff.y, diff.x);
+  // Calculate angle
+  float angleDeg = FastMath::radiansToDegrees(FastMath::fastAtan2(diff.y, diff.x));
+  
+  // Get maximum distance at this angle
+  float maxDist = getMaxPupilDistanceAtAngle(angleDeg);
+  
+  // Calculate distance from center
   float dist = FastMath::fastHypot(diff.x, diff.y);
   
   Point result;
-  if (dist > MAX_PUPIL_DISTANCE) {
-    // If exceeding maximum distance, limit to maximum distance
-    // Convert radians to degrees for lookup table
-    float angleDeg = FastMath::radiansToDegrees(angleRad);
-    result.x = static_cast<int16_t>(MAX_PUPIL_DISTANCE * FastMath::fastCos(angleDeg)) + basePoint.x;
-    result.y = static_cast<int16_t>(MAX_PUPIL_DISTANCE * FastMath::fastSin(angleDeg)) + basePoint.y;
+  if (dist > maxDist) {
+    // Scale to fit within ellipse
+    float scale = maxDist / dist;
+    result.x = static_cast<int16_t>(diff.x * scale) + basePoint.x;
+    result.y = static_cast<int16_t>(diff.y * scale) + basePoint.y;
   } else {
-    // If within maximum distance, use as is
+    // Within boundary, use as is
     result = basePoint + diff;
   }
   
   // Add small movements
   result = result + saccades;
+  
+  // Check again after adding saccades to ensure we're still within bounds
+  Point finalDiff = result - basePoint;
+  float finalDist = FastMath::fastHypot(finalDiff.x, finalDiff.y);
+  if (finalDist > maxDist) {
+    float scale = maxDist / finalDist;
+    result.x = static_cast<int16_t>(finalDiff.x * scale) + basePoint.x;
+    result.y = static_cast<int16_t>(finalDiff.y * scale) + basePoint.y;
+  }
   
   return result;
 }

@@ -28,19 +28,20 @@ enum class BlinkState {
 class Eye {
 public:
   // Eye settings
-  static constexpr uint8_t EYE_RADIUS = 65;
-  static constexpr uint8_t PUPIL_RADIUS = 13;
-  static constexpr uint8_t MAX_PUPIL_DISTANCE = 40;
+  static constexpr uint8_t EYE_RADIUS_X = 60;
+  static constexpr uint8_t EYE_RADIUS_Y = 75;
+  static constexpr uint8_t PUPIL_RADIUS_X = 10;
+  static constexpr uint8_t PUPIL_RADIUS_Y = 13;
   
   // Sprite settings
   static constexpr uint8_t SPRITE_WIDTH = 160;
-  static constexpr uint8_t SPRITE_HEIGHT = 131;
+  static constexpr uint8_t SPRITE_HEIGHT = 155;
   
   // Eye position
   static constexpr uint8_t EYE_BASE_Y = 120;
   static constexpr uint8_t EYE_LEFT_X = 80;
   static constexpr uint8_t EYE_RIGHT_X = 240;
-  static constexpr uint8_t DISPLAY_BASE_Y = 55;
+  static constexpr uint8_t DISPLAY_BASE_Y = 43;
   
 public:
   /**
@@ -142,4 +143,11 @@ private:
    * @param color Drawing color
    */
   void drawPupilWithColor(uint16_t color);
+  
+  /**
+   * @brief Get maximum pupil distance at a given angle (ellipse-aware)
+   * @param angleDeg Angle in degrees
+   * @return Maximum distance pupil center can move at this angle
+   */
+  float getMaxPupilDistanceAtAngle(float angleDeg) const;
 };

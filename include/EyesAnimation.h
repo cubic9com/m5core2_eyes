@@ -10,7 +10,7 @@
 class EyesAnimation {
 public:
   // Dizzy effect settings
-  static constexpr float ACCELERATION_THRESHOLD = 1.4F;
+  static constexpr float ACCELERATION_THRESHOLD = 1.05F;
   static constexpr uint8_t NUM_OF_ROTATION = 3;
   static constexpr float DIZZY_ROTATION_SPEED = 15.0F;
   static constexpr float DIZZY_TOTAL_DEGREES = 360.0F * NUM_OF_ROTATION;
@@ -21,7 +21,7 @@ public:
   static constexpr uint8_t BLINK_RANDOM_MIN = 10;
   static constexpr uint8_t BLINK_RANDOM_MAX = 200;
   static constexpr uint8_t BLINK_HALF_CLOSED_TOP_HEIGHT = 60;
-  static constexpr uint8_t BLINK_HALF_CLOSED_BOTTOM_HEIGHT = 7;
+  static constexpr uint8_t BLINK_HALF_CLOSED_BOTTOM_HEIGHT = 25;
   static constexpr uint8_t BLINK_HALF_CLOSED_BOTTOM_Y = 179;
   
   // Animation settings
