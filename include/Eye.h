@@ -50,8 +50,11 @@ public:
    * @param baseY Center Y coordinate of the eye
    * @param displayX X coordinate on the display
    * @param displayY Y coordinate on the display
+   * @param pupilOffsetX X offset for pupil drawing (default: 0)
+   * @param pupilOffsetY Y offset for pupil drawing (default: 0)
    */
-  Eye(int16_t baseX, int16_t baseY, int16_t displayX, int16_t displayY);
+  Eye(int16_t baseX, int16_t baseY, int16_t displayX, int16_t displayY,
+       int16_t pupilOffsetX = 0, int16_t pupilOffsetY = 0);
   
   /**
    * @brief Clear the eye
@@ -101,9 +104,10 @@ public:
   void render(M5GFX* display);
   
 private:
-  Point basePoint;       // Center coordinates of the eye
-  Point displayOffset;   // Offset on the display
-  Point pupilPosition;   // Current position of the pupil
+  Point basePoint;       // Center coordinates of eye
+  Point displayOffset;   // Offset on display
+  Point pupilPosition;   // Current position of pupil
+  Point pupilDrawOffset; // Offset for pupil drawing only
   BlinkState lastBlinkState; // Previous blink state
   M5Canvas canvas;       // Canvas for drawing
   

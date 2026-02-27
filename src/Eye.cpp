@@ -8,11 +8,15 @@
  * @param baseY Center Y coordinate of the eye
  * @param displayX X coordinate on the display
  * @param displayY Y coordinate on the display
+ * @param pupilOffsetX X offset for pupil drawing (default: 0)
+ * @param pupilOffsetY Y offset for pupil drawing (default: 0)
  */
-Eye::Eye(int16_t baseX, int16_t baseY, int16_t displayX, int16_t displayY) 
+Eye::Eye(int16_t baseX, int16_t baseY, int16_t displayX, int16_t displayY,
+         int16_t pupilOffsetX, int16_t pupilOffsetY) 
   : basePoint(baseX, baseY),
     displayOffset(displayX, displayY),
     pupilPosition(baseX, baseY),
+    pupilDrawOffset(pupilOffsetX, pupilOffsetY),
     lastBlinkState(BlinkState::OPEN)
 {
   // Create sprite with 1-bit color depth
@@ -185,7 +189,9 @@ void Eye::drawPupil() {
  */
 void Eye::drawPupilWithColor(uint16_t color) {
   Point localPupil = toLocalCoordinates(pupilPosition);
-  canvas.fillEllipse(localPupil.x, localPupil.y, PUPIL_RADIUS_X, PUPIL_RADIUS_Y, color);
+  // Apply pupil draw offset for drawing only
+  canvas.fillEllipse(localPupil.x + pupilDrawOffset.x, localPupil.y + pupilDrawOffset.y, 
+                      PUPIL_RADIUS_X, PUPIL_RADIUS_Y, color);
 }
 
 /**
@@ -233,7 +239,7 @@ float Eye::getMaxPupilDistanceAtAngle(float angleDeg) const {
   float maxDist = (a * b) / denominator;
   
   // Apply a margin factor to prevent the pupil from clinging to the outline of the white of the eye
-  return maxDist * 0.88F;
+  return maxDist * 0.80F;
 }
 
 /**

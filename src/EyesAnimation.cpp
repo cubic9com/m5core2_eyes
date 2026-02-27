@@ -14,13 +14,17 @@ EyesAnimation::EyesAnimation()
       Eye::EYE_LEFT_X, 
       Eye::EYE_BASE_Y, 
       0, 
-      Eye::DISPLAY_BASE_Y
+      Eye::DISPLAY_BASE_Y,
+      7,
+      0
     ),
     rightEye(
       Eye::EYE_RIGHT_X, 
       Eye::EYE_BASE_Y, 
       Eye::SPRITE_WIDTH, 
-      Eye::DISPLAY_BASE_Y
+      Eye::DISPLAY_BASE_Y,
+      -7,
+      0
     ),
     state(EyeState::NORMAL),
     degree(0.0F),
