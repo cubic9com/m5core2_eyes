@@ -71,7 +71,7 @@ M5Stack Core2は、コンパクトでかわいらしいデザイン、直感的�
     - Search for `PlatformIO IDE` and install it.
 
 1. Open PlatformIO Home:
-    - In the left Activity Bar, click PlatformIO icon.
+    - In the left Activity Bar, click the PlatformIO icon.
     - In the left Primary Sidebar, go to `QUICK ACCESS > PIO Home > Open`.
 
 1. Open the project:
