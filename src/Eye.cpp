@@ -205,6 +205,12 @@ void Eye::drawPupilWithColor(uint16_t color) {
  * @param newPosition New position of the pupil
  */
 void Eye::updatePupil(const Point& newPosition) {
+  // Do not move the pupil while the eyelid is down:
+  // erasing the old pupil would paint a white circle on the black eyelid
+  if (lastBlinkState != BlinkState::OPEN) {
+    return;
+  }
+
   // Do nothing if position hasn't changed
   if (pupilPosition.x == newPosition.x && pupilPosition.y == newPosition.y) {
     return;
