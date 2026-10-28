@@ -82,7 +82,7 @@ void EyesAnimation::loop() {
   
   updateEyesBasedOnState();
   
-  // Display sprites (update both eyes at once)
+  // Render only the eyes whose sprite content changed
   renderEyes();
 }
 
@@ -170,8 +170,14 @@ void EyesAnimation::handleNormalState() {
  * @brief Render both eyes to display
  */
 void EyesAnimation::renderEyes() {
-  leftEye.render(&M5.Display);
-  rightEye.render(&M5.Display);
+  // Only push each eye's sprite when its content has actually changed (dirty flag)
+  // This avoids unnecessary LCD transfers that cause flickering and left-right tearing
+  if (leftEye.isDirty()) {
+    leftEye.render(&M5.Display);
+  }
+  if (rightEye.isDirty()) {
+    rightEye.render(&M5.Display);
+  }
 }
 
 /**
@@ -278,8 +284,8 @@ Point EyesAnimation::generateSaccades() {
   static Point lastSaccade(0, 0);
   uint32_t currentTime = millis();
   
-  // Limit saccade update frequency (50ms interval)
-  if (currentTime - lastSaccadeTime < 50) {
+  // Limit saccade update frequency (200ms interval)
+  if (currentTime - lastSaccadeTime < 200) {
     return lastSaccade;
   }
   

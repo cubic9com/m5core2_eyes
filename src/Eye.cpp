@@ -31,6 +31,7 @@ Eye::Eye(int16_t baseX, int16_t baseY, int16_t displayX, int16_t displayY,
  */
 void Eye::clear() {
   canvas.fillScreen(TFT_BLACK);
+  dirty = true; // Mark as dirty since canvas content changed
 }
 
 /**
@@ -39,6 +40,7 @@ void Eye::clear() {
 void Eye::drawWhite() {
   Point localCenter = toLocalCoordinates(basePoint);
   canvas.fillEllipse(localCenter.x, localCenter.y, EYE_RADIUS_X, EYE_RADIUS_Y, TFT_WHITE);
+  dirty = true; // Mark as dirty since canvas content changed
 }
 
 /**
@@ -157,6 +159,8 @@ void Eye::drawBlink(BlinkState state) {
       break;
   }
   
+  // Mark as dirty since canvas content changed
+  dirty = true;
   // Update state
   lastBlinkState = state;
 }
@@ -167,6 +171,7 @@ void Eye::drawBlink(BlinkState state) {
  */
 void Eye::render(M5GFX* display) {
   canvas.pushSprite(display, displayOffset.x, displayOffset.y);
+  dirty = false; // Clear dirty flag after pushing sprite to display
 }
 
 /**
@@ -192,6 +197,7 @@ void Eye::drawPupilWithColor(uint16_t color) {
   // Apply pupil draw offset for drawing only
   canvas.fillEllipse(localPupil.x + pupilDrawOffset.x, localPupil.y + pupilDrawOffset.y, 
                       PUPIL_RADIUS_X, PUPIL_RADIUS_Y, color);
+  dirty = true; // Mark as dirty since canvas content changed (covers erasePupil and drawPupil)
 }
 
 /**

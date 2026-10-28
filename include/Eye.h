@@ -102,14 +102,21 @@ public:
    * @param display Display object
    */
   void render(M5GFX* display);
+
+  /**
+   * @brief Check whether the sprite has been modified since the last render
+   * @return true if the sprite needs to be pushed to the display
+   */
+  bool isDirty() const { return dirty; }
   
 private:
-  Point basePoint;       // Center coordinates of eye
-  Point displayOffset;   // Offset on display
-  Point pupilPosition;   // Current position of pupil
-  Point pupilDrawOffset; // Offset for pupil drawing only
+  Point basePoint;           // Center coordinates of eye
+  Point displayOffset;       // Offset on display
+  Point pupilPosition;       // Current position of pupil
+  Point pupilDrawOffset;     // Offset for pupil drawing only
   BlinkState lastBlinkState; // Previous blink state
-  M5Canvas canvas;       // Canvas for drawing
+  M5Canvas canvas;           // Canvas for drawing
+  bool dirty = true;         // True when the sprite content has changed and needs to be pushed
   
   /**
    * @brief Erase the pupil
